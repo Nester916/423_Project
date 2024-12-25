@@ -176,6 +176,43 @@ def display():
     glutSwapBuffers()
     glutPostRedisplay()
 
+#######unable to move the spaceship together
+
+def KeyboardListener(key, x, y):
+    global shooter_cy1
+    
+    
+    if key == b'w':
+        if shooter_cy1 > 600:
+            pass
+        else:
+            shooter_cy1 += 5 
+    
+    if key == b's':
+        if shooter_cy1 < 50:
+            pass
+        else:
+            shooter_cy1 -= 5
+    
+   
+
+def KeyboardListener2(key, x, y):
+    
+    global shooter_cy2
+    
+    if key == b'o':
+        if shooter_cy2 > 600:
+            pass
+        else:
+            shooter_cy2 += 5
+    
+    if key == b'k':
+        if shooter_cy2 < 50:
+            pass
+        else:
+            shooter_cy2 -= 5
+        
+    
 
 glutInit()
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
@@ -184,4 +221,6 @@ shooter2p = glutCreateWindow(b"HUE HAVOC - 2P")
 init()
 glutDisplayFunc(display)
 glEnable(GL_DEPTH_TEST)
+glutKeyboardFunc(KeyboardListener)
+glutKeyboardFunc(KeyboardListener2)
 glutMainLoop()
