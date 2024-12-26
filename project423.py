@@ -176,7 +176,7 @@ def display():
     glutSwapBuffers()
     glutPostRedisplay()
 
-#######unable to move the spaceship together
+
 
 def KeyboardListener(key, x, y):
     global shooter_cy1
@@ -186,31 +186,29 @@ def KeyboardListener(key, x, y):
         if shooter_cy1 > 600:
             pass
         else:
-            shooter_cy1 += 5 
+            shooter_cy1 += 10 
     
     if key == b's':
         if shooter_cy1 < 50:
             pass
         else:
-            shooter_cy1 -= 5
+            shooter_cy1 -= 10
     
-   
 
-def KeyboardListener2(key, x, y):
-    
+def specialKeyListener(key, x, y):
     global shooter_cy2
     
-    if key == b'o':
-        if shooter_cy2 > 600:
-            pass
-        else:
-            shooter_cy2 += 5
-    
-    if key == b'k':
+    if key == GLUT_KEY_DOWN:
         if shooter_cy2 < 50:
             pass
         else:
-            shooter_cy2 -= 5
+            shooter_cy2 -= 10
+    
+    if key == GLUT_KEY_UP:
+        if shooter_cy2 > 600:
+            pass
+        else:
+            shooter_cy2 += 10
         
     
 
@@ -222,5 +220,5 @@ init()
 glutDisplayFunc(display)
 glEnable(GL_DEPTH_TEST)
 glutKeyboardFunc(KeyboardListener)
-glutKeyboardFunc(KeyboardListener2)
+glutSpecialFunc(specialKeyListener)
 glutMainLoop()
