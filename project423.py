@@ -13,6 +13,9 @@ shooter_cx1, shooter_cy1, shooter_r, shooter_s = 30, 300, 20, 15
 shooter_cx2, shooter_cy2, shooter_r, shooter_s = 770, 300, 20, 15
 shooter_shift, shooter_incr = 0, 0.4
 
+#keyboard vars
+key_states = {}
+
 def init():
     glClearColor(0, 0, 0, 0)
     glMatrixMode(GL_PROJECTION)
@@ -179,38 +182,40 @@ def display():
 
 
 def KeyboardListener(key, x, y):
-    global shooter_cy1
-    
-    
-    if key == b'w':
-        if shooter_cy1 > 600:
-            pass
-        else:
-            shooter_cy1 += 10 
-    
-    if key == b's':
-        if shooter_cy1 < 50:
-            pass
-        else:
-            shooter_cy1 -= 10
+    global key_states
+    key_states[key] = True
+
+def KeyboardUpListener(key, x, y):
+    global key_states
+    key_states[key] = False
     
 
 def specialKeyListener(key, x, y):
-    global shooter_cy2
+    global key_states
+    key_states[key] = True
+
+def specialUpKeyListener(key, x, y):
+    global key_states
+    key_states[key] = False
+
+def keyupdate(value):
+    global shooter_cy1, shooter_cy2
     
-    if key == GLUT_KEY_DOWN:
-        if shooter_cy2 < 50:
-            pass
-        else:
-            shooter_cy2 -= 10
+    #Player 1 control (W/S):
+    if key_states.get(b'w', False) and shooter_cy1 <= 600:
+        shooter_cy1 += 5
+    if key_states.get(b's', False) and shooter_cy1 >= 50:
+        shooter_cy1 -= 5
     
-    if key == GLUT_KEY_UP:
-        if shooter_cy2 > 600:
-            pass
-        else:
-            shooter_cy2 += 10
-        
+    #Player 2 control (up/down):
+    if key_states.get(GLUT_KEY_UP, False) and shooter_cy2 <= 600:
+        shooter_cy2 += 5
+    if key_states.get(GLUT_KEY_DOWN, False) and shooter_cy2 >= 50:
+        shooter_cy2 -= 5
     
+    
+    glutPostRedisplay()
+    glutTimerFunc(16, keyupdate, 0)
 
 glutInit()
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
@@ -220,5 +225,8 @@ init()
 glutDisplayFunc(display)
 glEnable(GL_DEPTH_TEST)
 glutKeyboardFunc(KeyboardListener)
+glutKeyboardUpFunc(KeyboardUpListener)
 glutSpecialFunc(specialKeyListener)
+glutSpecialUpFunc(specialUpKeyListener)
+glutTimerFunc(16, keyupdate, 0)
 glutMainLoop()
