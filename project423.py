@@ -21,8 +21,8 @@ shotBubble1_cx, shotBubble1_cy, shotBubble1_cl, shotBubble_r = [], [], [], 5
 shotBubble2_cx, shotBubble2_cy, shotBubble2_cl = [], [], []
 shot1_stat=[]
 shot2_stat=[]
-shtr1_scor=0
-shtr2_scor=0
+score1=0
+score2=0
 key_state = {
     b'w': False,  # for shooter1 go up
     b's': False,  # for shooter1 go down
@@ -289,13 +289,11 @@ def animate():
                 if shot1_stat[i]==2:
                     glColor3f(0,0,1)
                 print(shotBubble1_cx[i], shotBubble1_cy[i])
-                print(3)
                 shotBubble1_cx[i] = shotBubble1_cx[i] + shooter1_incr
                 mid_circle(shotBubble1_cx[i], shotBubble1_cy[i], shotBubble_r)
             elif shotBubble1_cy[i]+5 >= 800 and shot1_stat[i] in [0,1,2]:
-                life-=1
-                #shtr_rst(i)
-                print("Remaining life:", life)
+                score1-=1
+                print(f"Score: Player_1={score1}, Player_2={score2}" )
             else:
                 print(1)
                 #shtr_rst(i)
