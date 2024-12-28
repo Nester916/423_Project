@@ -8,7 +8,6 @@ import math
 width, height = 800, 700
 
 pause=False
-dead=False
 # shooter
 shooter1_cx, shooter1_cy, shooter_r, shooter_s = 30, 300, 20, 15
 shooter2_cx, shooter2_cy = 770, 300
@@ -23,6 +22,7 @@ shot1_stat=[]
 shot2_stat=[]
 score1=10
 score2=10
+dead=False
 key_state = {
     b'w': False,  # for shooter1 go up
     b's': False,  # for shooter1 go down
@@ -223,8 +223,9 @@ def draw_shtr2():
 
 def shooter_mode(n=0):
     global shooter1_mode, shooter2_mode
-    shooter1_mode=(shooter1_mode+1)%3
-    shooter2_mode=(shooter2_mode+1)%3
+    if pause!=True:
+        shooter1_mode=(shooter1_mode+1)%3
+        shooter2_mode=(shooter2_mode+1)%3
     glutTimerFunc(6000, shooter_mode, 0)
 
 def display():
@@ -279,8 +280,8 @@ def special_keyboard_up(key, x, y):
 # Game update function
 def update_game():
     global shooter1_cx, shooter1_cy, shotBubble1_cx, shotBubble1_cy, shooter1_shift, shooter2_cx, shooter2_cy, shotBubble2_cx, shotBubble2_cy, shooter2_shift
-    global shot1_stat, shot2_stat, pause, dead
-    if not pause and not dead:
+    global shot1_stat, shot2_stat, pause
+    if not pause:
         # Shooter1 movement
         if key_state[b'w'] and shooter1_shift + shooter1_cy < 600:  # Move up
             shooter1_shift += 10
@@ -330,9 +331,9 @@ def update_game():
 
 def animate():
     global shooter1_incr, shooter1_shift, shotBubble1_cx, shotBubble1_cy, shooter1_incr, shooter1_shift, shotBubble1_cx, shotBubble1_cy, shotBubble_r
-    global pause, dead, shot1_stat, shot2_stat, score1, score2
+    global pause, shot1_stat, shot2_stat, score1, score2
     global life
-    if not pause and not dead:
+    if not pause:
         for i in range(len(shotBubble1_cy)):
             if shotBubble1_cx[i]+5 <= 800 and shot1_stat[i] in [0,1,2]:
                 if shot1_stat[i]==0:
@@ -343,13 +344,11 @@ def animate():
                     glColor3f(0,0,1)
                 shotBubble1_cx[i] = shotBubble1_cx[i] + shooter1_incr
                 mid_circle(shotBubble1_cx[i], shotBubble1_cy[i], shotBubble_r)
-                print(1)
             elif shotBubble1_cx[i]+5 > 800 and shot1_stat[i] in [0,1,2]:
                 shot1_stat[i]=3
                 score1-=1
                 print(f"Score: Player_1={score1}, Player_2={score2}" )
-                if score1<0:
-                    game_over()
+                
         for i in range(len(shotBubble2_cy)):
             if shotBubble2_cx[i]+5 >= 0 and shot2_stat[i] in [0,1,2]:
                 if shot2_stat[i]==0:
@@ -364,15 +363,26 @@ def animate():
                 shot2_stat[i]=3
                 score2-=1
                 print(f"Score: Player_1={score1}, Player_2={score2}" )
-                if score1<0:
-                    game_over()
+        game_over()
 
     else:
         for i in range(len(shotBubble1_cy)):
             if shotBubble1_cx[i]+5 <= 800 and shot1_stat[i] in [0,1,2]:
+                if shot1_stat[i]==0:
+                    glColor3f(1,0,0)
+                if shot1_stat[i]==1:
+                    glColor3f(0,1,0)
+                if shot1_stat[i]==2:
+                    glColor3f(0,0,1)
                 mid_circle(shotBubble1_cx[i], shotBubble1_cy[i], shotBubble_r)
         for i in range(len(shotBubble2_cy)):
-            if shotBubble2_cx[i]+5 >= 0 and shot1_stat[i] in [0,1,2]:
+            if shotBubble2_cx[i]+5 >= 0 and shot2_stat[i] in [0,1,2]:
+                if shot2_stat[i]==0:
+                    glColor3f(1,0,0)
+                if shot2_stat[i]==1:
+                    glColor3f(0,1,0)
+                if shot2_stat[i]==2:
+                    glColor3f(0,0,1)
                 mid_circle(shotBubble2_cx[i], shotBubble2_cy[i], shotBubble_r)
             
 
@@ -399,12 +409,11 @@ def collision2():
 
             shright = shooter1_cx + shooter_r
             if shright >= sleft and shot2_stat[j] in [0,1,2]:
-                print(shup, sup, shdown)
                 if (shup >= sup and sup >= shdown) or (
                     shup >= sdown and sdown >= shdown
                     ):
                     if shooter1_mode==shot2_stat[j]:
-                        score1 = -50
+                        score2 += 50
                         shot2_stat[j]=3
                         print(f"Score: Player_1={score1}, Player_2={score2}" )
                     else:
@@ -433,16 +442,67 @@ def collision1():
 
             shleft = shooter2_cx - shooter_r
             if shleft <= sright and shot1_stat[j] in [0,1,2]:
-                print(shup, sup, shdown)
                 if (shup >= sup and sup >= shdown) or (
                     shup >= sdown and sdown >= shdown
                     ):
                     if shooter2_mode==shot1_stat[j]:
-                        score2 = -50
+                        score1 += 50
                         shot1_stat[j]=3
                         print(f"Score: Player_1={score1}, Player_2={score2}" )
                     else:
                         shot1_stat[j]=3
+
+def mouselistener(button, state, x, y):
+    global height, width, pause, score1, score2, dead
+
+    nx = x
+    ny = height - y
+
+    if button == GLUT_LEFT_BUTTON:
+        if state == GLUT_DOWN:
+            # setting pause
+            if nx > 390 and nx < 420 and ny > 650 and ny < 690:
+                if dead==False:
+                    pause = not pause
+            # setting reset
+            elif nx > 5 and nx < 60 and ny >650 and ny < 690:
+                print(f"Score: Player_1={score1}, Player_2={score2}" )
+                print("Starting Over", end="; ")
+                re_start()
+            # setting cross
+            elif nx > 760 and nx < 790 and ny > 650 and ny < 690:
+                print(f"Score: Player_1={score1}, Player_2={score2}" )
+                print("Goodbye", end="; ")
+                glutDestroyWindow(shooter2p)
+
+def re_start():
+    global pause, score1, score2, shooter1_shift, shooter2_shift, shotBubble1_cx, shotBubble1_cy, shot1_stat, shotBubble2_cx, shotBubble2_cy, shot2_stat
+    pause= False
+
+    score1, score2 = 0, 0
+    shotBubble1_cx, shotBubble1_cy, shot1_stat = [], [], []
+    shotBubble2_cx, shotBubble2_cy, shot2_stat = [], [], []
+    shooter1_shift, shooter2_shift = 0, 0
+
+def game_over():
+    global score1, score2, pause, dead
+    if score1 >= 100:
+        print("Game Over. Player 1 Wins!!!")
+        dead=True
+        pause = True
+    elif score2 >= 100:
+        print("Game Over. Player 2 Wins!!!")
+        dead=True
+        pause = True
+    elif score1 < 0:
+        print("Game Over. Player 2 Wins!!!")
+        dead=True
+        pause = True
+    elif score2 < 0:
+        print("Game Over. Player 1 Wins!!!")
+        dead=True
+        pause = True
+    
 
 glutInit()
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
