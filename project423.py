@@ -12,7 +12,7 @@ dead=False
 # shooter
 shooter1_cx, shooter1_cy, shooter_r, shooter_s = 30, 300, 20, 15
 shooter2_cx, shooter2_cy = 770, 300
-shooter1_shift, shooter2_shift, shooter1_incr, shooter2_incr = 0, 0, 8, 8
+shooter1_shift, shooter2_shift, shooter1_incr, shooter2_incr = 0, 0, 3, 3
 shooter1_mode=0
 shooter2_mode=2
 life1=3
@@ -132,7 +132,7 @@ def mid_circle(cx, cy, rad):
         circ_points(x, y, cx, cy)
 
 def circ_points(x, y, cx, cy):
-    print(x + cx, y + cy)
+    
     glVertex2f(x + cx, y + cy)
     glVertex2f(y + cx, x + cy)
 
@@ -282,15 +282,15 @@ def update_game():
     if not pause and not dead:
         # Shooter1 movement
         if key_state[b'w'] and shooter1_cy < 600:  # Move up
-            shooter1_cy += 10
+            shooter1_cy += 3
         if key_state[b's'] and shooter1_cy > 50:  # Move down
-            shooter1_cy -= 10
+            shooter1_cy -= 3
 
         # Shooter2 movement
         if key_state['up'] and shooter2_cy < 600:  # Move up
-            shooter2_cy += 10
+            shooter2_cy += 3
         if key_state['down'] and shooter2_cy > 50:  # Move down
-            shooter2_cy -= 10
+            shooter2_cy -= 3
 
         # Shooter1 shooting
         if key_state[b'e']:  # Red bullet
@@ -340,14 +340,14 @@ def animate():
                     glColor3f(0,1,0)
                 if shot1_stat[i]==2:
                     glColor3f(0,0,1)
-                print(shotBubble1_cx[i], shotBubble1_cy[i])
+                
                 shotBubble1_cx[i] = shotBubble1_cx[i] + shooter1_incr
                 mid_circle(shotBubble1_cx[i], shotBubble1_cy[i], shotBubble_r)
             elif shotBubble1_cy[i]+5 >= 800 and shot1_stat[i] in [0,1,2]:
                 score1-=1
                 print(f"Score: Player_1={score1}, Player_2={score2}" )
             else:
-                print(1)
+                pass
                 #shtr_rst(i)
         #game_over()
         for i in range(len(shotBubble2_cy)):
@@ -358,7 +358,7 @@ def animate():
                     glColor3f(0,1,0)
                 if shot2_stat[i]==2:
                     glColor3f(0,0,1)
-                print(shotBubble2_cx[i], shotBubble2_cy[i])
+                
                 shotBubble2_cx[i] = shotBubble2_cx[i] - shooter2_incr
                 mid_circle(shotBubble2_cx[i], shotBubble2_cy[i], shotBubble_r)
             elif shotBubble2_cy[i]+5 <= 0 and shot1_stat[i] in [0,1,2]:
@@ -366,7 +366,7 @@ def animate():
                 #shtr_rst(i)
                 print("Remaining life:", life)
             else:
-                print(1)
+                pass
                 #shtr_rst(i)
         #game_over()
     else:
@@ -379,17 +379,75 @@ def animate():
             
     glutPostRedisplay()
 
-
+#handling all the above buttons
 def mouselistener(button, state, x, y):
     global pause
     global height
+    global score1
+    global score2
     y = height - y
     
     if button == GLUT_LEFT_BUTTON and state == GLUT_DOWN:
         if 380 <= x <= 420 and 650 <= y <= 690:
             pause = not pause
             print("Pause" if pause else "Playing!")
-            glutPostRedisplay()
+            #Pause done
+        elif 760 <= x <= 790 and 650 <= y <= 690:
+            print(f"Exiting game...")
+            print(f"Game Over! Player 1 score: {score1}, Player 2 score: {score2}")
+            glutLeaveMainLoop()
+            #Close done
+        elif 5 <= x <= 60 and 650 <= y <= 690:
+            print("Restarting the game!")
+            print(f"PLayer 1 score: {score1}, Player 2 score: {score2}")
+            restart_game()
+            #Restart done
+            
+    glutPostRedisplay()
+
+#Function for restarting the game taking all the variables to initial
+def restart_game():
+
+    global pause, dead
+    global shooter1_cx, shooter1_cy, shooter2_cx, shooter2_cy
+    global shooter1_shift, shooter2_shift, shooter1_incr, shooter2_incr
+    global shooter1_mode, shooter2_mode, life1, life2
+    global shotBubble1_cx, shotBubble1_cy, shotBubble1_cl, shotBubble_r
+    global shotBubble2_cx, shotBubble2_cy, shotBubble2_cl
+    global shot1_stat, shot2_stat, score1, score2, key_state
+    
+    
+    pause=False
+    dead=False
+    # shooter
+    shooter1_cx, shooter1_cy, shooter_r, shooter_s = 30, 300, 20, 15
+    shooter2_cx, shooter2_cy = 770, 300
+    shooter1_shift, shooter2_shift, shooter1_incr, shooter2_incr = 0, 0, 8, 8
+    shooter1_mode=0
+    shooter2_mode=2
+    life1=3
+    life2=3
+    shotBubble1_cx, shotBubble1_cy, shotBubble1_cl, shotBubble_r = [], [], [], 5
+    shotBubble2_cx, shotBubble2_cy, shotBubble2_cl = [], [], []
+    shot1_stat=[]
+    shot2_stat=[]
+    score1=0
+    score2=0
+    key_state = {
+        b'w': False,  # for shooter1 go up
+        b's': False,  # for shooter1 go down
+        b'e': False,  #1 shoot red bullet
+        b'r': False,  #1 shoot green bullet
+        b't': False,  #1 shoot blue bullet
+        'up': False,  # for shooter2 go up
+        'down': False,  # for shooter2 go down
+        b'/': False,  #2 shoot red bullet
+        b'.': False,  #2 shoot green bullet
+        b',': False,  #2 shoot blue bullet
+    }
+    print('NEW GAME!')   
+            
+
 
 glutInit()
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
