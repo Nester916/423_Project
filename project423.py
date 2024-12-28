@@ -167,9 +167,9 @@ def draw_pause():
     global pause
     glColor3f(1.0, 1.0, 0.0)
     if pause == True:
-        draw_line(380, 690, 420, 670)
-        draw_line(420, 670, 380, 650)
-        draw_line(380, 650, 420, 690)
+        draw_line(390, 690, 390, 650)
+        draw_line(390, 690, 420, 670)
+        draw_line(390, 650, 420, 670)
     else:
         draw_line(390, 690, 390, 650)
         draw_line(410, 690, 410, 650)
@@ -380,6 +380,17 @@ def animate():
     glutPostRedisplay()
 
 
+def mouselistener(button, state, x, y):
+    global pause
+    global height
+    y = height - y
+    
+    if button == GLUT_LEFT_BUTTON and state == GLUT_DOWN:
+        if 380 <= x <= 420 and 650 <= y <= 690:
+            pause = not pause
+            print("Pause" if pause else "Playing!")
+            glutPostRedisplay()
+
 glutInit()
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
 glutInitWindowSize(width, height)
@@ -387,11 +398,12 @@ shooter2p = glutCreateWindow(b"Space Shooter - 2P")
 init()
 shooter_mode()
 glutDisplayFunc(display)
-#glutIdleFunc(animate)
+glutIdleFunc(animate)
 glutKeyboardFunc(keyboard)
 glutKeyboardUpFunc(keyboard_up)
 glutSpecialFunc(special_keyboard)
 glutSpecialUpFunc(special_keyboard_up)
 glutIdleFunc(update_game)
+glutMouseFunc(mouselistener)
 glEnable(GL_DEPTH_TEST)
 glutMainLoop()
