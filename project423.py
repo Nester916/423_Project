@@ -246,33 +246,85 @@ def display():
     glutSwapBuffers()
     glutPostRedisplay()
 
-def keyboardListener(key, x, y):
+
+# Keyboard press event handler for regular keys
+def keyboard(key, x, y):
+    global key_state
+    if key in key_state:
+        key_state[key] = True
+
+# Keyboard release event handler for regular keys
+def keyboard_up(key, x, y):
+    global key_state
+    if key in key_state:
+        key_state[key] = False
+
+# Special key press event handler for arrow keys
+def special_keyboard(key, x, y):
+    global key_state
+    if key == GLUT_KEY_UP:
+        key_state['up'] = True  # Shooter2 move up
+    elif key == GLUT_KEY_DOWN:
+        key_state['down'] = True  # Shooter2 move down
+
+# Special key release event handler for arrow keys
+def special_keyboard_up(key, x, y):
+    global key_state
+    if key == GLUT_KEY_UP:
+        key_state['up'] = False  # Shooter2 stop moving up
+    elif key == GLUT_KEY_DOWN:
+        key_state['down'] = False  # Shooter2 stop moving down
+
+# Game update function
+def update_game():
     global shooter1_cx, shooter1_cy, shotBubble1_cx, shotBubble1_cy, shooter1_shift, shooter2_cx, shooter2_cy, shotBubble2_cx, shotBubble2_cy, shooter2_shift
     global shot1_stat, shot2_stat, pause, dead
-    if key == b"e":
-        shot1_stat+=[0]
-        shotBubble1_cx += [25+shooter1_cx]
-        shotBubble1_cy += [shooter1_cy+ shooter1_shift]
-    if key == b"r":
-        shot1_stat+=[1]
-        shotBubble1_cx += [25+shooter1_cx]
-        shotBubble1_cy += [shooter1_cy+ shooter1_shift]
-    if key == b"t":
-        shot1_stat+=[2]
-        shotBubble1_cx += [25+shooter1_cx]
-        shotBubble1_cy += [shooter1_cy+ shooter1_shift]
-    if key == b"/":
-        shot2_stat+=[0]
-        shotBubble2_cx += [-25+shooter2_cx]
-        shotBubble2_cy += [shooter2_cy+ shooter2_shift]
-    if key == b".":
-        shot2_stat+=[1]
-        shotBubble2_cx += [-25+shooter2_cx]
-        shotBubble2_cy += [shooter2_cy+ shooter2_shift]
-    if key == b",":
-        shot2_stat+=[2]
-        shotBubble2_cx += [-25+shooter2_cx]
-        shotBubble2_cy += [shooter2_cy+ shooter2_shift]
+    if not pause and not dead:
+        # Shooter1 movement
+        if key_state[b'w'] and shooter1_cy < 600:  # Move up
+            shooter1_cy += 10
+        if key_state[b's'] and shooter1_cy > 50:  # Move down
+            shooter1_cy -= 10
+
+        # Shooter2 movement
+        if key_state['up'] and shooter2_cy < 600:  # Move up
+            shooter2_cy += 10
+        if key_state['down'] and shooter2_cy > 50:  # Move down
+            shooter2_cy -= 10
+
+        # Shooter1 shooting
+        if key_state[b'e']:  # Red bullet
+            shot1_stat+=[0]
+            shotBubble1_cx += [25+shooter1_cx]
+            shotBubble1_cy += [shooter1_cy+ shooter1_shift]
+            key_state[b'e'] = False  # Prevent continuous shooting
+        if key_state[b'r']:  # Green bullet
+            shot1_stat+=[1]
+            shotBubble1_cx += [25+shooter1_cx]
+            shotBubble1_cy += [shooter1_cy+ shooter1_shift]
+            key_state[b'r'] = False
+        if key_state[b't']:  # Blue bullet
+            shot1_stat+=[2]
+            shotBubble1_cx += [25+shooter1_cx]
+            shotBubble1_cy += [shooter1_cy+ shooter1_shift]
+            key_state[b't'] = False
+
+        # Shooter2 shooting
+        if key_state[b'/']:  # Red bullet
+            shot2_stat+=[0]
+            shotBubble2_cx += [-25+shooter2_cx]
+            shotBubble2_cy += [shooter2_cy+ shooter2_shift]
+            key_state[b'/'] = False
+        if key_state[b'.']:  # Green bullet
+            shot2_stat+=[1]
+            shotBubble2_cx += [-25+shooter2_cx]
+            shotBubble2_cy += [shooter2_cy+ shooter2_shift]
+            key_state[b'.'] = False
+        if key_state[b',']:  # Blue bullet
+            shot2_stat+=[2]
+            shotBubble2_cx += [-25+shooter2_cx]
+            shotBubble2_cy += [shooter2_cy+ shooter2_shift]
+            key_state[b','] = False
 
 
 def animate():
@@ -336,10 +388,10 @@ init()
 shooter_mode()
 glutDisplayFunc(display)
 #glutIdleFunc(animate)
-glutKeyboardFunc(keyboardListener)
-#glutKeyboardUpFunc(keyboard_up)
-#glutSpecialFunc(special_keyboard)
-#glutSpecialUpFunc(special_keyboard_up)
-#glutIdleFunc(update_game)
+glutKeyboardFunc(keyboard)
+glutKeyboardUpFunc(keyboard_up)
+glutSpecialFunc(special_keyboard)
+glutSpecialUpFunc(special_keyboard_up)
+glutIdleFunc(update_game)
 glEnable(GL_DEPTH_TEST)
 glutMainLoop()
