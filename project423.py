@@ -12,7 +12,7 @@ dead=False
 # shooter
 shooter1_cx, shooter1_cy, shooter_r, shooter_s = 30, 300, 20, 15
 shooter2_cx, shooter2_cy = 770, 300
-shooter1_shift, shooter2_shift, shooter1_incr, shooter2_incr = 0, 0, 8, 8
+shooter1_shift, shooter2_shift, shooter1_incr, shooter2_incr = 0, 0, 3, 3
 shooter1_mode=0
 shooter2_mode=2
 life1=3
@@ -166,9 +166,9 @@ def draw_pause():
     global pause
     glColor3f(1.0, 1.0, 0.0)
     if pause == True:
-        draw_line(380, 690, 420, 670)
-        draw_line(420, 670, 380, 650)
-        draw_line(380, 650, 420, 690)
+        draw_line(390, 690, 390, 650)
+        draw_line(390, 690, 420, 670)
+        draw_line(390, 650, 420, 670)
     else:
         draw_line(390, 690, 390, 650)
         draw_line(410, 690, 410, 650)
@@ -451,11 +451,12 @@ shooter2p = glutCreateWindow(b"Space Shooter - 2P")
 init()
 shooter_mode()
 glutDisplayFunc(display)
-#glutIdleFunc(animate)
+glutIdleFunc(animate)
 glutKeyboardFunc(keyboard)
 glutKeyboardUpFunc(keyboard_up)
 glutSpecialFunc(special_keyboard)
 glutSpecialUpFunc(special_keyboard_up)
 glutIdleFunc(update_game)
+glutMouseFunc(mouselistener)
 glEnable(GL_DEPTH_TEST)
 glutMainLoop()
