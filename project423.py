@@ -11,7 +11,7 @@ pause=False
 # shooter
 shooter1_cx, shooter1_cy, shooter_r, shooter_s = 30, 300, 20, 15
 shooter2_cx, shooter2_cy = 770, 300
-shooter1_shift, shooter2_shift, shooter1_incr, shooter2_incr = 0, 0, 3, 3
+shooter1_shift, shooter2_shift, shooter1_incr, shooter2_incr = 0, 0, 5, 5
 shooter1_mode=0
 shooter2_mode=2
 life1=3
@@ -413,7 +413,7 @@ def collision2():
                     shup >= sdown and sdown >= shdown
                     ):
                     if shooter1_mode==shot2_stat[j]:
-                        score2 += 50
+                        score2 += 20
                         shot2_stat[j]=3
                         print(f"Score: Player_1={score1}, Player_2={score2}" )
                     else:
@@ -446,7 +446,7 @@ def collision1():
                     shup >= sdown and sdown >= shdown
                     ):
                     if shooter2_mode==shot1_stat[j]:
-                        score1 += 50
+                        score1 += 20
                         shot1_stat[j]=3
                         print(f"Score: Player_1={score1}, Player_2={score2}" )
                     else:
