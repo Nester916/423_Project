@@ -464,6 +464,10 @@ def mouselistener(button, state, x, y):
             if nx > 390 and nx < 420 and ny > 650 and ny < 690:
                 if dead==False:
                     pause = not pause
+                if pause == False:
+                    print("Game Resumed")
+                else:
+                    print("Game Paused")
             # setting reset
             elif nx > 5 and nx < 60 and ny >650 and ny < 690:
                 print(f"Score: Player_1={score1}, Player_2={score2}" )
