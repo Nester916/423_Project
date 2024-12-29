@@ -284,15 +284,15 @@ def update_game():
     if not pause:
         # Shooter1 movement
         if key_state[b'w'] and shooter1_shift + shooter1_cy < 600:  # Move up
-            shooter1_shift += 10
+            shooter1_shift += 5
         if key_state[b's'] and shooter1_shift + shooter1_cy > 50:  # Move down
-            shooter1_shift -= 10
+            shooter1_shift -= 5
 
         # Shooter2 movement
         if key_state['up'] and shooter2_shift + shooter2_cy < 600:  # Move up
-            shooter2_shift += 10
+            shooter2_shift += 5
         if key_state['down'] and shooter2_shift + shooter2_cy > 50:  # Move down
-            shooter2_shift -= 10
+            shooter2_shift -= 5
 
         # Shooter1 shooting
         if key_state[b'e']:  # Red bullet
