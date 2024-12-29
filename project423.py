@@ -471,12 +471,12 @@ def mouselistener(button, state, x, y):
             # setting reset
             elif nx > 5 and nx < 60 and ny >650 and ny < 690:
                 print(f"Score: Player_1={score1}, Player_2={score2}" )
-                print("Starting Over", end="; ")
+                print("Starting Over! New Game.")
                 re_start()
             # setting cross
             elif nx > 760 and nx < 790 and ny > 650 and ny < 690:
                 print(f"Score: Player_1={score1}, Player_2={score2}" )
-                print("Goodbye", end="; ")
+                print("Goodbye!")
                 glutDestroyWindow(shooter2p)
 
 def re_start():
