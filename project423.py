@@ -292,7 +292,7 @@ def update_game():
         if key_state['up'] and shooter2_shift + shooter2_cy < 600:  # Move up
             shooter2_shift += 5
         if key_state['down'] and shooter2_shift + shooter2_cy > 50:  # Move down
-            shooter2_shift -= 5
+            shooter2_shift -= 5     
 
         # Shooter1 shooting
         if key_state[b'e']:  # Red bullet
