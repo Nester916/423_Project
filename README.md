@@ -1,2 +1,6 @@
 # 423_Project
-University Graphics Project
+University Computer Graphics Project
+OpenGL 2-Player Spaceshooter Game
+Controls:
+Player1 - WASD 
+Player2 - Arrow Keys
